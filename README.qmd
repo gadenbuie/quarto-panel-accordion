@@ -20,7 +20,9 @@ format:
 format-links: false
 ---
 
-Easily add accordion panels to your Quarto websites using this extension.
+::: {.content-visible unless-format="html"}
+Easily add Bootstrap accordion panels to your Quarto websites using this extension.
+:::
 
 When used with `format: html`, the content is rendered as a Bootstrap accordion component.
 In other formats, the content is rendered as normal Quarto markdown.

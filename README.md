@@ -1,7 +1,7 @@
 # Accordion Panels for Quarto Websites
 
 
-Easily add accordion panels to your Quarto websites using this
+Easily add Bootstrap accordion panels to your Quarto websites using this
 extension.
 
 When used with `format: html`, the content is rendered as a Bootstrap
