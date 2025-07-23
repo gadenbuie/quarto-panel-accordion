@@ -1,0 +1,111 @@
+---
+title: "Accordion Panel Example"
+
+filters:
+  - panel-accordion
+
+format: html
+---
+
+## One panel at a time
+
+````{.markdown}
+::: {.panel-accordion #first}
+### Accordion 1
+
+First accordion content
+
+### Accordion 2
+
+Second accordion content
+:::
+````
+
+::: {#first .panel-accordion}
+### Accordion 1
+
+First accordion content
+
+### Accordion 2
+
+Second accordion content
+:::
+
+
+
+
+## Initial open panel
+
+````{.markdown}
+::: panel-accordion
+### Accordion 1
+
+First accordion content
+
+### Accordion 2 {.open}
+
+Second accordion content
+:::
+````
+
+::: panel-accordion
+### Accordion 1
+
+First accordion content
+
+### Accordion 2 {.open}
+
+Second accordion content
+:::
+
+
+
+## Multiple panels
+
+````{.markdown}
+::: {.panel-accordion multiple="true"}
+### Accordion 1
+
+First accordion content
+
+### Accordion 2
+
+Second accordion content
+:::
+````
+
+::: {.panel-accordion multiple="true"}
+### Accordion 1
+
+First accordion content
+
+### Accordion 2
+
+Second accordion content
+:::
+
+
+
+## Multiple panels, all open
+
+````{.markdown}
+::: {.panel-accordion multiple="true"}
+### Accordion 1 {.open}
+
+First accordion content
+
+### Accordion 2 {.open}
+
+Second accordion content
+:::
+````
+
+::: {.panel-accordion multiple="true"}
+### Accordion 1 {.open}
+
+First accordion content
+
+### Accordion 2 {.open}
+
+Second accordion content
+:::

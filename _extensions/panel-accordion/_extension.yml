@@ -1,0 +1,8 @@
+title: Accordion Panels
+author: Garrick Aden-Buie
+version: 0.0.1
+quarto-required: ">=1.4.0"
+contributes:
+  filters:
+    - panel-accordion.lua
+
