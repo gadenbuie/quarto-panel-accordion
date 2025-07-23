@@ -51,7 +51,7 @@ function render_icon(icon_attr)
     return icon_attr .. " "
   else
     -- Bootstrap icon name, wrap in bi classes
-    return '<i class="bi bi-' .. icon_attr .. ' pe-2"></i> '
+    return '<i class="bi bi-' .. icon_attr .. '"></i> '
   end
 end
 
@@ -118,7 +118,7 @@ function render_accordion(attr, panels, level, id)
     end
 
     accordion_content:insert(pandoc.RawBlock('html',
-      '      <button class="' .. button_class .. '" type="button" data-bs-toggle="collapse" ' ..
+      '      <button class="' .. button_class .. ' gap-2" type="button" data-bs-toggle="collapse" ' ..
       'data-bs-target="#' .. collapse_id .. '" aria-expanded="' .. expanded .. '" ' ..
       'aria-controls="' .. collapse_id .. '">'))
 
@@ -127,6 +127,7 @@ function render_accordion(attr, panels, level, id)
     -- remove wrapping <p> tags if present
     title_html = title_html:gsub("^<p>", ""):gsub("</p>$", ""):gsub("^%s*", ""):gsub("%s*$", "")
     local icon_html = render_icon(panel.icon)
+    title_html = '<div>' .. title_html .. '</div>'
     accordion_content:insert(pandoc.RawBlock('html', '        ' .. icon_html .. title_html))
 
     accordion_content:insert(pandoc.RawBlock('html', '      </button>'))

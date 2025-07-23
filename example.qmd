@@ -68,7 +68,7 @@ Second accordion content
 
 First accordion content
 
-### Accordion 2
+### Accordion 2 _with extra_ markdown **formatting**
 
 Second accordion content
 :::
@@ -79,7 +79,7 @@ Second accordion content
 
 First accordion content
 
-### Accordion 2
+### Accordion 2 _with extra_ markdown **formatting**
 
 Second accordion content
 :::
