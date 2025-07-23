@@ -81,3 +81,9 @@ First accordion content
 Second accordion content
 :::
 ```
+
+## Acknowledgements
+
+For another approach to creating accordion panels, see the [accordion
+extension by Roy
+Francis](https://github.com/royfrancis/quarto-accordion).
