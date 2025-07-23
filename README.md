@@ -77,7 +77,7 @@ element.
 ### Accordion 1 {.open icon="1-square-fill"}
 First accordion content
 
-### Accordion 2 {.icon="2-square-fill"}
+### Accordion 2 {icon="2-square-fill"}
 Second accordion content
 :::
 ```

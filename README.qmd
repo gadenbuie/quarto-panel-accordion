@@ -63,7 +63,8 @@ Second accordion content
 :::
 ```
 
-::: {.panel-accordion .content-visible when-format="html"}
+::: {.content-visible when-format="html"}
+::: {.panel-accordion}
 ### Accordion 1
 
 First accordion content
@@ -71,6 +72,7 @@ First accordion content
 ### Accordion 2
 
 Second accordion content
+:::
 :::
 
 You can allow multiple panels to be open at once by adding `multiple="true"` to the block:
@@ -95,7 +97,8 @@ Second accordion content
 :::
 ```
 
-::: {.panel-accordion .content-visible when-format="html"}
+::: {.content-visible when-format="html"}
+::: {.panel-accordion}
 ### Accordion 1
 
 First accordion content
@@ -103,6 +106,7 @@ First accordion content
 ### Accordion 2 {.open}
 
 Second accordion content
+:::
 :::
 
 Finally, you can include custom icons for the accordion panel with the `icon` attribute, which accepts either the name of the icon from [Boostrap Icons](https://icons.getbootstrap.com/) or a custom HTML icon element.
@@ -112,15 +116,17 @@ Finally, you can include custom icons for the accordion panel with the `icon` at
 ### Accordion 1 {.open icon="1-square-fill"}
 First accordion content
 
-### Accordion 2 {.icon="2-square-fill"}
+### Accordion 2 {icon="2-square-fill"}
 Second accordion content
 :::
 ```
 
-::: {.panel-accordion .content-visible when-format="html"}
+::: {.content-visible when-format="html"}
+::: {.panel-accordion}
 ### Accordion 1 {.open icon="1-square-fill"}
 First accordion content
 
-### Accordion 2 {.icon="2-square-fill"}
+### Accordion 2 {icon="2-square-fill"}
 Second accordion content
+:::
 :::
