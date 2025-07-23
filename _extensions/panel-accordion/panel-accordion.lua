@@ -3,56 +3,86 @@
 -- License: MIT
 -- Author: Garrick Aden-Buie (2025) | https://garrickadenbuie.com
 
+--[[
+## Bootstrap Accordions
+
+<https://getbootstrap.com/docs/5.3/components/accordion/>
+
+```html
+<div class="accordion" id="accordionExample">
+  <div class="accordion-item">
+    <hX class="accordion-header">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <!-- icon -->
+        <div>Accordion Item #1</div>
+      </button>
+    </hX>
+    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <!-- First accordion item content, shown by default because of .show -->
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        <!-- icon -->
+        <div>Accordion Item #2</div>
+      </button>
+    </h2>
+    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <!-- Second accordion item content, hidden by default -->
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+> Omit the `data-bs-parent` attribute on each `.accordion-collapse` to make
+> accordion items stay open when another item is opened.
+]]
+
 local os = require("os")
 local accordion_idx = 1
 
 function parse_accordion_contents(div)
   local heading = div.content:find_if(function(el) return el.t == "Header" end)
-  if heading ~= nil then
-    -- note the level, then build accordion buckets for content after these levels
-    local level = heading.level
-    local panels = pandoc.List()
-    local panel = nil
-    for i=1,#div.content do
-      local el = div.content[i]
-
-      if el.t == "Header" then
-        assert(el.level >= level, "Accordion panel headings must be nested in order: accordions panels should use level " .. level .. " headings, but '" .. pandoc.utils.stringify(el.content) .. "' was found at level " .. el.level .. ".")
-      else
-        assert(panel, "Accordion panel content must be preceded by a heading. Found '" .. pandoc.utils.stringify(el) .. "' without a preceding header.")
-      end
-
-      if el.t == "Header" and el.level == level then
-        panel = {
-          title = el.content,
-          content = pandoc.List(),
-          open = el.attr.classes:includes("open"),
-          icon = el.attr.attributes["icon"] or "",
-        }
-        panels:insert(panel)
-      else
-        panel.content:insert(el)
-      end
-
-    end
-    return panels, level, div.identifier
-  else
+  if heading == nil then
+    -- no headings found, no accordion to create
     return nil
   end
-end
 
-function render_icon(icon_attr)
-  if not icon_attr or icon_attr == "" then
-    return ""
+  -- note the level, then build accordion buckets for content after these levels
+  local level = heading.level
+  local panels = pandoc.List()
+  local panel = nil
+  for i = 1, #div.content do
+    local el = div.content[i]
+
+    if el.t == "Header" then
+      assert(el.level >= level,
+        "Accordion panel headings must be nested in order: accordions panels should use level " ..
+        level .. " headings, but '" .. pandoc.utils.stringify(el.content) .. "' was found at level " .. el.level .. ".")
+    end
+
+    if el.t == "Header" and el.level == level then
+      panel = {
+        title = el.content,
+        content = pandoc.List(),
+        open = el.attr.classes:includes("open"),
+        icon = el.attr.attributes["icon"] or "",
+      }
+      panels:insert(panel)
+    else
+      assert(panel,
+        "Accordion panel content must be preceded by a heading. Found '" ..
+        pandoc.utils.stringify(el) .. "' without a preceding header.")
+      panel.content:insert(el)
+    end
   end
 
-  if icon_attr:sub(1, 1) == "<" then
-    -- HTML detected, return as-is with a space
-    return icon_attr .. " "
-  else
-    -- Bootstrap icon name, wrap in bi classes
-    return '<i class="bi bi-' .. icon_attr .. '"></i> '
-  end
+  return panels, level, div.identifier
 end
 
 function render_accordion(attr, panels, level, id)
@@ -84,13 +114,12 @@ function render_accordion(attr, panels, level, id)
   local accordion_content = pandoc.List()
 
   -- add opening accordion div
-  accordion_content:insert(pandoc.RawBlock('html', '<div class="accordion" id="' .. accordion_id .. '">'))
+  accordion_content:insert(pandoc.RawBlock('html',
+    string.format('<div class="accordion" id="%s">', accordion_id)
+  ))
 
   -- create each accordion item
   for i, panel in ipairs(panels) do
-    -- quarto.log.output('=== Panel ' .. i .. ' ===')
-    -- quarto.log.output(panel)
-    local itemid = accordion_id .. "-item-" .. i
     local collapse_id = accordion_id .. "-collapse-" .. i
     local header_id = accordion_id .. "-header-" .. i
 
@@ -102,14 +131,15 @@ function render_accordion(attr, panels, level, id)
       is_open = first_open_index == i
     end
 
-    -- accordion item container
+    -- accordion-item
     accordion_content:insert(pandoc.RawBlock('html', '  <div class="accordion-item">'))
 
-    -- accordion header
+    -- accordion-header
     local h_tag = 'h' .. level
-    accordion_content:insert(pandoc.RawBlock('html', '    <' .. h_tag ..  ' class="accordion-header no-anchor m-0 p-0" id="' .. header_id .. '">'))
+    accordion_content:insert(pandoc.RawBlock('html',
+      '    <' .. h_tag .. ' class="accordion-header no-anchor m-0 p-0" id="' .. header_id .. '">'))
 
-    -- accordion button
+    -- accordion-button
     local button_class = "accordion-button"
     local expanded = "true"
     if not is_open then
@@ -117,23 +147,23 @@ function render_accordion(attr, panels, level, id)
       expanded = "false"
     end
 
-    accordion_content:insert(pandoc.RawBlock('html',
-      '      <button class="' .. button_class .. ' gap-2" type="button" data-bs-toggle="collapse" ' ..
-      'data-bs-target="#' .. collapse_id .. '" aria-expanded="' .. expanded .. '" ' ..
-      'aria-controls="' .. collapse_id .. '">'))
+    accordion_content:insert(pandoc.RawBlock(
+      'html',
+      string.format(
+        '      <button class="%s gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#%s" aria-expanded="%s" aria-controls="%s">',
+        button_class, collapse_id, expanded, collapse_id
+      )
+    ))
 
     -- add title content
-    local title_html = pandoc.write(pandoc.Pandoc(pandoc.Plain(panel.title)), 'html')
-    -- remove wrapping <p> tags if present
-    title_html = title_html:gsub("^<p>", ""):gsub("</p>$", ""):gsub("^%s*", ""):gsub("%s*$", "")
-    local icon_html = render_icon(panel.icon)
-    title_html = '<div>' .. title_html .. '</div>'
-    accordion_content:insert(pandoc.RawBlock('html', '        ' .. icon_html .. title_html))
+    accordion_content:insert(render_title(panel.title, panel.icon))
 
+    -- /accordion-button
     accordion_content:insert(pandoc.RawBlock('html', '      </button>'))
+    -- /accordion-header
     accordion_content:insert(pandoc.RawBlock('html', '    </' .. h_tag .. '>'))
 
-    -- accordion collapse div
+    -- accordion-collapse
     local collapse_class = "accordion-collapse collapse"
     if is_open then
       collapse_class = collapse_class .. " show"
@@ -144,11 +174,15 @@ function render_accordion(attr, panels, level, id)
       parent_attr = ' data-bs-parent="#' .. accordion_id .. '"'
     end
 
-    accordion_content:insert(pandoc.RawBlock('html',
-      '    <div id="' .. collapse_id .. '" class="' .. collapse_class .. '"' .. parent_attr ..
-      ' aria-labelledby="' .. header_id .. '">'))
+    accordion_content:insert(pandoc.RawBlock(
+      'html',
+      string.format(
+        '    <div id="%s" class="%s"%s aria-labelledby="%s">',
+        collapse_id, collapse_class, parent_attr, header_id
+      )
+    ))
 
-    -- accordion body
+    -- accordion-body
     accordion_content:insert(pandoc.RawBlock('html', '      <div class="accordion-body">'))
 
     -- add panel content
@@ -156,15 +190,42 @@ function render_accordion(attr, panels, level, id)
       accordion_content:insert(content_el)
     end
 
+    -- /accordion-body
     accordion_content:insert(pandoc.RawBlock('html', '      </div>'))
+    -- /accordion-collapse
     accordion_content:insert(pandoc.RawBlock('html', '    </div>'))
+    -- /accordion-item
     accordion_content:insert(pandoc.RawBlock('html', '  </div>'))
   end
 
-  -- close accordion container
+  -- /accordion
   accordion_content:insert(pandoc.RawBlock('html', '</div>'))
 
   return accordion_content
+end
+
+function render_title(title, icon)
+  local title_html = pandoc.write(pandoc.Pandoc(pandoc.Plain(title)), 'html')
+  -- remove wrapping <p> tags if present
+  title_html = title_html:gsub("^<p>", ""):gsub("</p>$", ""):gsub("^%s*", ""):gsub("%s*$", "")
+  -- wrap title in a div to ensure proper spacing (button has display flex)
+  title_html = '<div>' .. title_html .. '</div>'
+
+  return pandoc.RawBlock('html', render_icon(icon) .. title_html)
+end
+
+function render_icon(icon_attr)
+  if not icon_attr or icon_attr == "" then
+    return ""
+  end
+
+  if icon_attr:sub(1, 1) == "<" then
+    -- HTML detected, return as-is with a space
+    return icon_attr .. " "
+  else
+    -- Bootstrap icon name, wrap in bi classes
+    return '<i class="bi bi-' .. icon_attr .. '"></i> '
+  end
 end
 
 function has_bootstrap()
@@ -172,7 +233,12 @@ function has_bootstrap()
     return false
   end
 
-  local paramsJson = quarto.base64.decode(os.getenv("QUARTO_FILTER_PARAMS") or "")
+  local paramsText = os.getenv("QUARTO_FILTER_PARAMS")
+  if paramsText == nil or paramsText == "" then
+    return false
+  end
+
+  local paramsJson = quarto.base64.decode(paramsText)
   local quartoParams = quarto.json.decode(paramsJson)
 
   local value = quartoParams["has-bootstrap"]
@@ -185,18 +251,20 @@ end
 
 function Div(div)
   if not has_bootstrap() then
-    return div -- only process for HTML output
+    return div
   end
 
-  if div.attr.classes:includes("panel-accordion") then
-    local panels, level, id = parse_accordion_contents(div)
-    if panels and #panels > 0 then
-      local accordion_blocks = render_accordion(div.attr, panels, level, id)
-      return accordion_blocks
-    else
-      -- return original div if no panels found
-      return div
-    end
+  if not div.attr.classes:includes("panel-accordion") then
+    return div
+  end
+
+  local panels, level, id = parse_accordion_contents(div)
+  if panels and #panels > 0 then
+    local accordion_blocks = render_accordion(div.attr, panels, level, id)
+    return accordion_blocks
+  else
+    -- return original div if no panels found
+    return div
   end
 end
 
