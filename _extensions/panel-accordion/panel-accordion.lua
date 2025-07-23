@@ -26,7 +26,8 @@ function parse_accordion_contents(div)
         panel = {
           title = el.content,
           content = pandoc.List(),
-          open = el.attr.classes:includes("open")
+          open = el.attr.classes:includes("open"),
+          icon = el.attr.attributes["icon"] or "",
         }
         panels:insert(panel)
       else
@@ -37,6 +38,20 @@ function parse_accordion_contents(div)
     return panels, level, div.identifier
   else
     return nil
+  end
+end
+
+function render_icon(icon_attr)
+  if not icon_attr or icon_attr == "" then
+    return ""
+  end
+
+  if icon_attr:sub(1, 1) == "<" then
+    -- HTML detected, return as-is with a space
+    return icon_attr .. " "
+  else
+    -- Bootstrap icon name, wrap in bi classes
+    return '<i class="bi bi-' .. icon_attr .. ' pe-2"></i> '
   end
 end
 
@@ -73,6 +88,8 @@ function render_accordion(attr, panels, level, id)
 
   -- create each accordion item
   for i, panel in ipairs(panels) do
+    -- quarto.log.output('=== Panel ' .. i .. ' ===')
+    -- quarto.log.output(panel)
     local itemid = accordion_id .. "-item-" .. i
     local collapse_id = accordion_id .. "-collapse-" .. i
     local header_id = accordion_id .. "-header-" .. i
@@ -109,7 +126,8 @@ function render_accordion(attr, panels, level, id)
     local title_html = pandoc.write(pandoc.Pandoc(pandoc.Plain(panel.title)), 'html')
     -- remove wrapping <p> tags if present
     title_html = title_html:gsub("^<p>", ""):gsub("</p>$", ""):gsub("^%s*", ""):gsub("%s*$", "")
-    accordion_content:insert(pandoc.RawBlock('html', '        ' .. title_html))
+    local icon_html = render_icon(panel.icon)
+    accordion_content:insert(pandoc.RawBlock('html', '        ' .. icon_html .. title_html))
 
     accordion_content:insert(pandoc.RawBlock('html', '      </button>'))
     accordion_content:insert(pandoc.RawBlock('html', '    </' .. h_tag .. '>'))

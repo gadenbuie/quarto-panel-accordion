@@ -11,22 +11,22 @@ format: html
 
 ````{.markdown}
 ::: {.panel-accordion #first}
-### Accordion 1
+### Accordion 1 {icon="1-square-fill"}
 
 First accordion content
 
-### Accordion 2
+### Accordion 2 {icon="2-square-fill"}
 
 Second accordion content
 :::
 ````
 
 ::: {#first .panel-accordion}
-### Accordion 1
+### Accordion 1 {icon="1-square-fill"}
 
 First accordion content
 
-### Accordion 2
+### Accordion 2 {icon="2-square-fill"}
 
 Second accordion content
 :::

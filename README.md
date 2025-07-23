@@ -57,6 +57,18 @@ Second accordion content
 :::
 ```
 
+Finally, you can include custom icons for the accordion panel with the `icon` attribute, which accepts either the name of the icon from [Boostrap Icons](https://icons.getbootstrap.com/) or a custom HTML icon element.
+
+```markdown
+::: {.panel-accordion}
+### Accordion 1 {.open icon="1-square-fill"}
+First accordion content
+
+### Accordion 2 {.icon="2-square-fill"}
+Second accordion content
+:::
+```
+
 ## Example
 
 Here is the source code for a minimal example: [example.qmd](example.qmd).
