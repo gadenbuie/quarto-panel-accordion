@@ -18,6 +18,9 @@ format:
         icon: question-circle-fill
 
 format-links: false
+
+filters:
+  - panel-accordion
 ---
 
 ::: {.content-visible unless-format="html"}
