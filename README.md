@@ -1,29 +1,37 @@
 # Accordion Panels for Quarto Websites
 
-Easily add accordion panels to your Quarto websites using this extension.
+
+Easily add accordion panels to your Quarto websites using this
+extension.
+
+When used with `format: html`, the content is rendered as a Bootstrap
+accordion component. In other formats, the content is rendered as normal
+Quarto markdown.
 
 ## Installing
 
-```bash
+``` bash
 quarto add gadenbuie/quarto-panel-accordion
 ```
 
-This will install the extension under the `_extensions` subdirectory.
-If you're using version control, you will want to check in this directory.
+This will install the extension under the `_extensions` subdirectory. If
+you’re using version control, you will want to check in this directory.
 
-To use the extension, you need to add it to your Quarto project YAML metadata:
+To use the extension, you need to add it to your Quarto project YAML
+metadata:
 
-```yaml
+``` yaml
 filters:
   - panel-accordion
 ```
 
 ## Using
 
-Creating an accordion panel is similar to creating a tabset panel.
+Creating an accordion panel is similar to creating a [tabset
+panel](https://quarto.org/docs/output-formats/html-basics.html#tabsets).
 Wrap the accordion content in a `panel-accordion` block.
 
-```markdown
+``` markdown
 ::: {.panel-accordion}
 ### Accordion 1
 
@@ -35,17 +43,19 @@ Second accordion content
 :::
 ```
 
-You can allow multiple panels to be open at once by adding `multiple="true"` to the block:
+You can allow multiple panels to be open at once by adding
+`multiple="true"` to the block:
 
-```markdown
+``` markdown
 ::: {.panel-accordion multiple="true"}
 
 :::
 ```
 
-And you can choose which panel is open initially by adding an `.open` class to the accordion panel header:
+And you can choose which panel is open initially by adding an `.open`
+class to the accordion panel header:
 
-```markdown
+``` markdown
 ::: {.panel-accordion}
 ### Accordion 1
 
@@ -57,9 +67,12 @@ Second accordion content
 :::
 ```
 
-Finally, you can include custom icons for the accordion panel with the `icon` attribute, which accepts either the name of the icon from [Boostrap Icons](https://icons.getbootstrap.com/) or a custom HTML icon element.
+Finally, you can include custom icons for the accordion panel with the
+`icon` attribute, which accepts either the name of the icon from
+[Boostrap Icons](https://icons.getbootstrap.com/) or a custom HTML icon
+element.
 
-```markdown
+``` markdown
 ::: {.panel-accordion}
 ### Accordion 1 {.open icon="1-square-fill"}
 First accordion content
@@ -68,8 +81,3 @@ First accordion content
 Second accordion content
 :::
 ```
-
-## Example
-
-Here is the source code for a minimal example: [example.qmd](example.qmd).
-
