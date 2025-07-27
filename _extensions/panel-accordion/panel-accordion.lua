@@ -228,29 +228,8 @@ function render_icon(icon_attr)
   end
 end
 
-function has_bootstrap()
-  if not quarto.format.is_html_output() then
-    return false
-  end
-
-  local paramsText = os.getenv("QUARTO_FILTER_PARAMS")
-  if paramsText == nil or paramsText == "" then
-    return false
-  end
-
-  local paramsJson = quarto.base64.decode(paramsText)
-  local quartoParams = quarto.json.decode(paramsJson)
-
-  local value = quartoParams["has-bootstrap"]
-  if value == nil then
-    return false
-  end
-
-  return value
-end
-
 function Div(div)
-  if not has_bootstrap() then
+  if not quarto.doc.has_bootstrap() then
     return div
   end
 
