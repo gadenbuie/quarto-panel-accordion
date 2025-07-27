@@ -43,7 +43,6 @@
 > accordion items stay open when another item is opened.
 ]]
 
-local os = require("os")
 local accordion_idx = 1
 
 function parse_accordion_contents(div)
