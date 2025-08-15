@@ -43,6 +43,12 @@
 > accordion items stay open when another item is opened.
 ]]
 
+quarto.doc.add_html_dependency({
+  name = "panel-accordion",
+  version = "0.0.1",
+  scripts = {"panel-accordion.js"}
+})
+
 local os = require("os")
 local accordion_idx = 1
 
@@ -72,6 +78,7 @@ function parse_accordion_contents(div)
         content = pandoc.List(),
         open = el.attr.classes:includes("open"),
         icon = el.attr.attributes["icon"] or "",
+        id = el.attr.identifier or nil
       }
       panels:insert(panel)
     else
@@ -121,7 +128,7 @@ function render_accordion(attr, panels, level, id)
   -- create each accordion item
   for i, panel in ipairs(panels) do
     local collapse_id = accordion_id .. "-collapse-" .. i
-    local header_id = accordion_id .. "-header-" .. i
+    local header_id = panel.id or accordion_id .. "-header-" .. i
 
     -- determine if this panel should be open
     local is_open = false
@@ -214,18 +221,17 @@ function render_title(title, icon)
   return pandoc.RawBlock('html', render_icon(icon) .. title_html)
 end
 
-function render_icon(icon_attr)
-  if not icon_attr or icon_attr == "" then
+function render_icon(icon)
+  if not icon or icon == "" then
     return ""
   end
 
-  if icon_attr:sub(1, 1) == "<" then
+  if icon:sub(1, 1) ~= "<" then
     -- HTML detected, return as-is with a space
-    return icon_attr .. " "
-  else
-    -- Bootstrap icon name, wrap in bi classes
-    return '<i class="bi bi-' .. icon_attr .. '"></i> '
+    icon = '<i class="bi bi-' .. icon .. '"></i>'
   end
+
+  return icon .. ' '
 end
 
 function has_bootstrap()

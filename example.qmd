@@ -22,7 +22,7 @@ Second accordion content
 ````
 
 ::: {#first .panel-accordion}
-### Accordion 1 {icon="1-square-fill"}
+### Accordion 1 {#first-one icon="1-square-fill"}
 
 First accordion content
 
