@@ -27,9 +27,6 @@
     collapse.show();
   }
 
-  document.addEventListener("DOMContentLoaded", openAccordionFromHash);
-  window.addEventListener("hashchange", openAccordionFromHash);
-
   function handleAnchorClick(event) {
     const link = event.currentTarget;
 
@@ -39,16 +36,25 @@
     }
   }
 
-  window.onload = function () {
-    const links = document.querySelectorAll(".accordion-header .anchorjs-link");
-    links.forEach(function (link) {
-      const header = link.closest(".accordion-header");
-      const headerContent = header.querySelector(".accordion-header-content");
-      if (headerContent) {
-        headerContent.appendChild(link);
-        link.addEventListener("click", handleAnchorClick);
-      }
-    });
-  };
-})();
+  function moveAccordionAnchorLinks() {
+    if (!document.querySelector(".accordion-header")) return;
+    if (!document.querySelector(".anchored .anchorjs-link")) {
+      setTimeout(moveAccordionAnchorLinks, 10);
+    }
 
+    document
+      .querySelectorAll(".accordion-header .anchorjs-link")
+      .forEach(function (link) {
+        const header = link.closest(".accordion-header");
+        const headerContent = header.querySelector(".accordion-header-content");
+        if (headerContent) {
+          headerContent.appendChild(link);
+          link.addEventListener("click", handleAnchorClick);
+        }
+      });
+  }
+
+  document.addEventListener("DOMContentLoaded", openAccordionFromHash);
+  window.addEventListener("hashchange", openAccordionFromHash);
+  document.addEventListener("DOMContentLoaded", moveAccordionAnchorLinks);
+})();
