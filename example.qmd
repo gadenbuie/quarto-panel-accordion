@@ -26,7 +26,7 @@ Second accordion content
 
 First accordion content
 
-### Accordion 2 {icon="2-square-fill"}
+### Accordion 2 {.no-anchor icon="2-square-fill"}
 
 Second accordion content
 :::

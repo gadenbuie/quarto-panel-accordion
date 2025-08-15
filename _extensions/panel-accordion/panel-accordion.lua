@@ -78,7 +78,8 @@ function parse_accordion_contents(div)
         content = pandoc.List(),
         open = el.attr.classes:includes("open"),
         icon = el.attr.attributes["icon"] or "",
-        id = el.attr.identifier or nil
+        id = el.attr.identifier or nil,
+        no_anchor = el.attr.classes:includes("no-anchor")
       }
       panels:insert(panel)
     else
@@ -143,8 +144,12 @@ function render_accordion(attr, panels, level, id)
 
     -- accordion-header
     local h_tag = 'h' .. level
+    local h_classes = "accordion-header m-0 p-0"
+    if panel.no_anchor then
+      h_classes = h_classes .. " no-anchor"
+    end
     accordion_content:insert(pandoc.RawBlock('html',
-      '    <' .. h_tag .. ' class="accordion-header no-anchor m-0 p-0" id="' .. header_id .. '">'))
+      '    <' .. h_tag .. ' class="' .. h_classes .. '" id="' .. header_id .. '">'))
 
     -- accordion-button
     local button_class = "accordion-button"
@@ -216,7 +221,7 @@ function render_title(title, icon)
   -- remove wrapping <p> tags if present
   title_html = title_html:gsub("^<p>", ""):gsub("</p>$", ""):gsub("^%s*", ""):gsub("%s*$", "")
   -- wrap title in a div to ensure proper spacing (button has display flex)
-  title_html = '<div>' .. title_html .. '</div>'
+  title_html = '<div class="accordion-header-content">' .. title_html .. '</div>'
 
   return pandoc.RawBlock('html', render_icon(icon) .. title_html)
 end
